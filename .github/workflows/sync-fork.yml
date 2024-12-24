@@ -2,7 +2,7 @@ name: Sync Fork
 
 on:
   schedule:
-    - cron: '0 0 * * 5'    # 每周五0点运行一次
+    - cron: '0 0 * * *'    # 每天0点运行一次
   workflow_dispatch:        # 允许手动触发
 
 jobs:
@@ -14,11 +14,27 @@ jobs:
         with:
           fetch-depth: 0
           
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git remote add upstream https://github.com/wzdnzd/aggregator.git
+          git fetch upstream
+          
+          # 检查两个分支之间是否有差异
+          DIFF_COUNT=$(git rev-list --count upstream/main...main)
+          echo "diff_count=$DIFF_COUNT" >> $GITHUB_OUTPUT
+          
+          if [ "$DIFF_COUNT" -eq "0" ]; then
+            echo "No changes detected between branches"
+            exit 0
+          fi
+
       - name: Sync Fork
+        if: steps.check_changes.outputs.diff_count != '0'
         uses: tgymnich/fork-sync@v1.8
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           owner: wzdnzd
-          repo: aggregator  
+          repo: aggregator
           base: main        # 原仓库的主分支名称
-          head: main       # 您的fork仓库的主分支名称
+          head: main        # 您的fork仓库的主分支名称
