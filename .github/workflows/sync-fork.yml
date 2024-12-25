@@ -8,29 +8,28 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          
+
       - name: Check for changes
         id: check_changes
         run: |
           git remote add upstream https://github.com/wzdnzd/aggregator.git
           git fetch upstream
-          
+
           # 检查两个分支之间是否有差异
           DIFF_COUNT=$(git rev-list --count upstream/main...main)
-          echo "diff_count=$DIFF_COUNT" >> $GITHUB_OUTPUT
+          echo "diff_count=$DIFF_COUNT" >> $GITHUB_ENV
           
           if [ "$DIFF_COUNT" -eq "0" ]; then
             echo "No changes detected between branches"
             exit 0
-          fi
 
       - name: Sync Fork
-        if: steps.check_changes.outputs.diff_count != '0'
+        if: env.diff_count != '0'
         uses: tgymnich/fork-sync@v1.8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
