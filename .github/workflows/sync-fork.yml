@@ -27,6 +27,7 @@ jobs:
           if [ "$DIFF_COUNT" -eq "0" ]; then
             echo "No changes detected between branches"
             exit 0
+          fi
 
       - name: Sync Fork
         if: ${{ env.diff_count != '0' }}
