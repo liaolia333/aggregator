@@ -29,7 +29,7 @@ jobs:
             exit 0
 
       - name: Sync Fork
-        if: env.diff_count != '0'
+        if: ${{ env.diff_count != '0' }}
         uses: tgymnich/fork-sync@v1.8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
