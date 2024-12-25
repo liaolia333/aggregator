@@ -29,6 +29,16 @@ jobs:
             exit 0
           fi
 
+      - name: Debug Info
+        run: |
+          echo "DIFF_COUNT: ${{ env.diff_count }}"
+          git branch -r
+          git remote -v
+
       - name: Sync Fork
         if: ${{ env.diff_count != '0' }}
         uses: tgymnich/fork-sync@v1.8
+        with:
+          upstream_repository: wzdnzd/aggregator
+          upstream_branch: main
+          target_branch: main
