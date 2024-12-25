@@ -31,9 +31,3 @@ jobs:
       - name: Sync Fork
         if: ${{ env.diff_count != '0' }}
         uses: tgymnich/fork-sync@v1.8
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          owner: wzdnzd
-          repo: aggregator
-          base: main        # 原仓库的主分支名称
-          head: main        # 您的fork仓库的主分支名称
